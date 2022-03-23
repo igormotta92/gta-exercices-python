@@ -6,15 +6,15 @@
 from array import array
 from datetime import datetime
 
-# post = []
-
+post_dict = dict()
+user_dict = dict()
 
 class User:
 
     ids = []
 
     def __init__(self, user_id: int, name: str, alias: str) -> None:
-        self.user_id = user_id
+        self.user_id = user_id  # criar dinamicamente
         self.name = name
         self.alias = alias
 
@@ -60,9 +60,9 @@ class Post:
     ids = []
 
     def __init__(self, post_id: int, user: User, message="", comments=[]) -> None:
-        self.post_id = post_id
+        self.post_id = post_id  # criar dinamicamente
         self.user = user
-        self.message = message
+        self.message = elipsize_long_text(message)
         self.datetime = datetime.now()
         self.comments = comments
 
@@ -78,9 +78,9 @@ class Comment:
     ids = []
 
     def __init__(self, cmt_id: int, user: User, text: str) -> None:
-        self.__cmt_id = cmt_id
+        self.__cmt_id = cmt_id  # criar dinamicamente
         self.__user = user
-        self.__text = text
+        self.__text = elipsize_long_text(text)
         self.__date = datetime.now()
 
     ####
@@ -120,6 +120,12 @@ class Comment:
         self.__date = datetime.now()
 
 
+def elipsize_long_text(text):
+    if len(text) > 144:
+        text = text[:144] + "..."
+    return text
+
+
 ##MENU
 def menu():
 
@@ -140,25 +146,40 @@ def menu():
             user_name = input("Digite seu nome: ")
             nickname = input("Digite seu nickname: ")
             user = User(user_name, nickname)
-
-            print("User {} criado id:{} ".format(user.name, user.user_id))
+            user_dict[user_id] = user
+            print("User {} criado. \nid:{} ".format(user.name, user.user_id))
             menu()
         case 2:
             # chamar criar post
-            user_id = int(input("Digite a opção: "))
-            message = input("Digite seu nickname: ")
-            post = Post(user, message)
-
-            print("Post criado id:{} ".format(post.id))
+            user_id = int(input("Digite o id do usuário: "))
+            message = input("Insira a mensagem do post [lim 144 chars]: ")
+            new_post = Post(user_dict[user_id], message)
+            post_dict[new_post.post_id] = new_post
+            print("Post criado com sucesso. \nid:{} ".format(new_post.post_id))
             menu()
         case 3:
-            user_id = int(input("Digite o id do Post que se deseja deletar: "))
-
             # chamar excluir post
+            post_id = int(input("Digite o id do Post que se deseja deletar: "))
+            try:
+                del post_dict[post_id]
+                print('Post deletado com sucesso. \nid {}'.format(post_id))
+            except KeyError as e:
+                print(e)
+                print("The post with id {} does not exist.".format(post_id))
             menu()
         case 4:
-
             # chamar comentar post
+            user_id = int(input("Digite o id do autor do comentário: "))
+            post_id = int(input("Digite o id do post a ser comentado: "))
+            try:
+                comment_author = user_dict[user_id]
+                commented_post = post_dict[post_id]
+            except KeyError:
+                print("O usuário ou post {} não existe.")
+            else:
+                comment_txt = input("Insira o novo comentario do post [lim 144 chars]: ")
+                new_comment = Comment(comment_author, comment_txt)
+                commented_post.add_comment(new_comment)
             menu()
         case 5:
 
