@@ -34,4 +34,11 @@ pip install -U black
 # ???
 'C:\Users\igorm\OneDrive\Área de Trabalho\python\_env\Scripts\python.exe -m pip install --upgrade pip'
 
+# Links
+- https://github.com/microsoft/vscode-python/issues/4831 (Auto save VSCode)
+- https://csatlas.com/python-import-file-module/
+- https://docs.python.org/3/library/exceptions.html#exception-hierarchy
+- https://docs.python.org/3/library/pathlib.html
+- https://www.geeksforgeeks.org/python-string-join-method/
+
 -- Julio Secchin - Serasa do Amor
